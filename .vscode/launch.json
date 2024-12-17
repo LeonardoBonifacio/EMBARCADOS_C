@@ -8,10 +8,10 @@
       "type": "cppdbg",
       "request": "launch",
       "args": [],
-      "stopAtEntry": false,
+      "stopAtEntry": true,
       "externalConsole": true,
       "cwd": "c:/Users/bonil/Desktop/EMBARCADOS_C",
-      "program": "c:/Users/bonil/Desktop/EMBARCADOS_C/build/Debug/outDebug",
+      "program": "C:/Users/bonil/Desktop/EMBARCADOS_C/output/teste.exe",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [
