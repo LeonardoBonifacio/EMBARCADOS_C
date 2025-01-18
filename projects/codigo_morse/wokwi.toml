@@ -1,0 +1,4 @@
+[wokwi]
+version = 1
+firmware = 'build/codigo_morse.uf2'
+elf = 'build/codigo_morse.elf'

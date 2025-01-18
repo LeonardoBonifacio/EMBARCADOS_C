@@ -1,0 +1,45 @@
+{
+  "version": 1,
+  "author": "Anonymous maker",
+  "editor": "wokwi",
+  "parts": [
+    {
+      "type": "board-pi-pico-w",
+      "id": "pico",
+      "top": 0,
+      "left": 0,
+      "attrs": { "builder": "pico-sdk" }
+    },
+    {
+      "type": "wokwi-pushbutton-6mm",
+      "id": "btn1",
+      "top": 26.6,
+      "left": -124.8,
+      "attrs": { "color": "green" }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "led1",
+      "top": 92.4,
+      "left": -140.2,
+      "attrs": { "color": "red" }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "r1",
+      "top": 128.75,
+      "left": -86.4,
+      "attrs": { "value": "150" }
+    }
+  ],
+  "connections": [
+    [ "pico:GP0", "$serialMonitor:RX", "", [] ],
+    [ "pico:GP1", "$serialMonitor:TX", "", [] ],
+    [ "r1:1", "led1:A", "green", [ "v0" ] ],
+    [ "pico:GP5", "btn1:1.l", "green", [ "h-63.65", "v-80.05", "h-67.2" ] ],
+    [ "pico:GND.5", "led1:C", "black", [ "h32.66", "v54.39", "h-230.8" ] ],
+    [ "btn1:2.l", "led1:C", "green", [ "h-38.4", "v115.6", "h38.4", "v19.2" ] ],
+    [ "r1:2", "pico:GP13", "green", [ "v0" ] ]
+  ],
+  "dependencies": {}
+}
