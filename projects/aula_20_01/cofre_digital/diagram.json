@@ -1,0 +1,157 @@
+{
+    "version": 1,
+    "author": "Leonardo Bonifácio Vieira Santos",
+    "editor": "wokwi",
+    "parts": [
+      { "type": "board-pi-pico-w", "id": "pico", "top": -70.45, "left": 166.75, "attrs": {} },
+      {
+        "type": "wokwi-led",
+        "id": "led1",
+        "top": 15.6,
+        "left": -293.8,
+        "attrs": { "color": "green" }
+      },
+      { "type": "wokwi-led", "id": "led2", "top": 54, "left": -303.4, "attrs": { "color": "red" } },
+      {
+        "type": "wokwi-membrane-keypad",
+        "id": "keypad1",
+        "top": -366.8,
+        "left": 370.4,
+        "attrs": {}
+      },
+      {
+        "type": "wokwi-7segment",
+        "id": "sevseg1",
+        "top": -184.82,
+        "left": -191.12,
+        "rotate": 180,
+        "attrs": { "digits": "4", "colon": "", "common": "cathode", "color": "white" }
+      },
+      { "type": "wokwi-resistor", "id": "r1", "top": 61.55, "left": 0, "attrs": { "value": "330" } },
+      {
+        "type": "wokwi-resistor",
+        "id": "r2",
+        "top": 42.35,
+        "left": -38.4,
+        "attrs": { "value": "330" }
+      },
+      {
+        "type": "wokwi-resistor",
+        "id": "r3",
+        "top": 32.75,
+        "left": -86.4,
+        "attrs": { "value": "330" }
+      },
+      {
+        "type": "wokwi-resistor",
+        "id": "r4",
+        "top": 23.15,
+        "left": -28.8,
+        "attrs": { "value": "330" }
+      },
+      {
+        "type": "wokwi-resistor",
+        "id": "r5",
+        "top": 13.55,
+        "left": 9.6,
+        "attrs": { "value": "330" }
+      },
+      {
+        "type": "wokwi-resistor",
+        "id": "r6",
+        "top": -5.65,
+        "left": 9.6,
+        "attrs": { "value": "330" }
+      },
+      {
+        "type": "wokwi-resistor",
+        "id": "r7",
+        "top": -15.25,
+        "left": 9.6,
+        "attrs": { "value": "330" }
+      },
+      {
+        "type": "wokwi-resistor",
+        "id": "r8",
+        "top": -24.85,
+        "left": 9.6,
+        "attrs": { "value": "330" }
+      },
+      {
+        "type": "wokwi-resistor",
+        "id": "r9",
+        "top": -34.45,
+        "left": 19.2,
+        "attrs": { "value": "330" }
+      },
+      {
+        "type": "wokwi-resistor",
+        "id": "r10",
+        "top": -53.65,
+        "left": 28.8,
+        "attrs": { "value": "330" }
+      },
+      {
+        "type": "wokwi-resistor",
+        "id": "r11",
+        "top": -63.25,
+        "left": 48,
+        "attrs": { "value": "330" }
+      },
+      {
+        "type": "wokwi-resistor",
+        "id": "r12",
+        "top": 90.35,
+        "left": -86.4,
+        "attrs": { "value": "330" }
+      },
+      {
+        "type": "wokwi-resistor",
+        "id": "r13",
+        "top": 71.15,
+        "left": -76.8,
+        "attrs": { "value": "330" }
+      }
+    ],
+    "connections": [
+      [ "pico:GP0", "$serialMonitor:RX", "", [] ],
+      [ "pico:GP1", "$serialMonitor:TX", "", [] ],
+      [ "led2:A", "r12:1", "red", [ "v0" ] ],
+      [ "r12:2", "pico:GP13", "red", [ "v0" ] ],
+      [ "led1:A", "r13:1", "green", [ "v0" ] ],
+      [ "r13:2", "pico:GP11", "green", [ "v0" ] ],
+      [ "led2:C", "pico:GND.4", "black", [ "v0" ] ],
+      [ "led1:C", "pico:GND.4", "black", [ "h-18.8", "v47.96" ] ],
+      [ "keypad1:C4", "pico:GP16", "yellow", [ "v0" ] ],
+      [ "keypad1:C3", "pico:GP17", "yellow", [ "v0" ] ],
+      [ "keypad1:C2", "pico:GP18", "yellow", [ "v0" ] ],
+      [ "keypad1:C1", "pico:GP19", "yellow", [ "v0" ] ],
+      [ "keypad1:R4", "pico:GP20", "blue", [ "v0" ] ],
+      [ "keypad1:R3", "pico:GP21", "blue", [ "v0" ] ],
+      [ "keypad1:R2", "pico:GP22", "blue", [ "v0" ] ],
+      [ "keypad1:R1", "pico:GP26", "blue", [ "v0" ] ],
+      [ "sevseg1:A", "r11:1", "white", [ "v0" ] ],
+      [ "r11:2", "pico:GP0", "black", [ "v0" ] ],
+      [ "sevseg1:B", "r10:1", "white", [ "v0" ] ],
+      [ "r10:2", "pico:GP1", "black", [ "v0" ] ],
+      [ "sevseg1:C", "r9:1", "white", [ "v-8.76", "h-105.6", "v153.6" ] ],
+      [ "r9:2", "pico:GP2", "black", [ "v0" ] ],
+      [ "sevseg1:D", "r8:1", "white", [ "v-18.36", "h-134.4", "v172.8" ] ],
+      [ "r8:2", "pico:GP3", "black", [ "v0" ] ],
+      [ "sevseg1:E", "r7:1", "white", [ "v-27.96", "h-153.61", "v192" ] ],
+      [ "r7:2", "pico:GP4", "black", [ "v0" ] ],
+      [ "sevseg1:F", "r6:1", "white", [ "v0" ] ],
+      [ "r6:2", "pico:GP5", "black", [ "v0" ] ],
+      [ "sevseg1:G", "r5:1", "white", [ "v-37.56", "h-144", "v230.4" ] ],
+      [ "r5:2", "pico:GP6", "black", [ "v0" ] ],
+      [ "sevseg1:DIG1", "r4:1", "white", [ "v0" ] ],
+      [ "r4:2", "pico:GP7", "black", [ "v0" ] ],
+      [ "sevseg1:DIG2", "r3:1", "white", [ "v48", "h9.6" ] ],
+      [ "r3:2", "pico:GP8", "black", [ "v0" ] ],
+      [ "sevseg1:DIG3", "r2:1", "white", [ "v0" ] ],
+      [ "r2:2", "pico:GP9", "black", [ "v0" ] ],
+      [ "sevseg1:DIG4", "r1:1", "white", [ "v-47.16", "h-144", "v288" ] ],
+      [ "r1:2", "pico:GP10", "black", [ "v0" ] ]
+    ],
+    "dependencies": {}
+  }

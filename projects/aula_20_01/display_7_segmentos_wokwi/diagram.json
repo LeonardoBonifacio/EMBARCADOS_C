@@ -1,0 +1,84 @@
+{
+    "version": 1,
+    "author": "Leonardo Bonifácio Vieira Santos",
+    "editor": "wokwi",
+    "parts": [
+      { "type": "board-pi-pico-w", "id": "pico", "top": -60.85, "left": 89.95, "attrs": {} },
+      {
+        "type": "wokwi-7segment",
+        "id": "sevseg2",
+        "top": -14.22,
+        "left": -263.72,
+        "attrs": { "common": "cathode" }
+      },
+      {
+        "type": "wokwi-resistor",
+        "id": "r1",
+        "top": -53.65,
+        "left": -153.6,
+        "attrs": { "value": "220" }
+      },
+      {
+        "type": "wokwi-resistor",
+        "id": "r2",
+        "top": -34.45,
+        "left": -153.6,
+        "attrs": { "value": "220" }
+      },
+      {
+        "type": "wokwi-resistor",
+        "id": "r3",
+        "top": -15.25,
+        "left": -153.6,
+        "attrs": { "value": "220" }
+      },
+      {
+        "type": "wokwi-resistor",
+        "id": "r4",
+        "top": 3.95,
+        "left": -153.6,
+        "attrs": { "value": "220" }
+      },
+      {
+        "type": "wokwi-resistor",
+        "id": "r5",
+        "top": 32.75,
+        "left": -153.6,
+        "attrs": { "value": "220" }
+      },
+      {
+        "type": "wokwi-resistor",
+        "id": "r7",
+        "top": 90.35,
+        "left": -153.6,
+        "attrs": { "value": "220" }
+      },
+      {
+        "type": "wokwi-resistor",
+        "id": "r8",
+        "top": 119.15,
+        "left": -153.6,
+        "attrs": { "value": "220" }
+      }
+    ],
+    "connections": [
+      [ "pico:GP0", "$serialMonitor:RX", "", [] ],
+      [ "pico:GP1", "$serialMonitor:TX", "", [] ],
+      [ "sevseg2:A", "r1:1", "green", [ "v0" ] ],
+      [ "r1:2", "pico:GP0", "green", [ "v0" ] ],
+      [ "sevseg2:B", "r2:1", "green", [ "v0" ] ],
+      [ "r2:2", "pico:GP1", "green", [ "v0" ] ],
+      [ "sevseg2:C", "r3:1", "green", [ "h28.8", "v-67.2" ] ],
+      [ "r3:2", "pico:GP2", "green", [ "v0" ] ],
+      [ "sevseg2:D", "r4:1", "green", [ "v19.2", "h57.6", "v-67.2" ] ],
+      [ "r4:2", "pico:GP3", "green", [ "v-9.6", "h114" ] ],
+      [ "sevseg2:E", "r5:1", "green", [ "v38.4", "h48", "v-57.6" ] ],
+      [ "sevseg2:COM.1", "pico:GND.3", "yellow", [ "h0" ] ],
+      [ "sevseg2:F", "r7:1", "green", [ "h-38.4", "v116.04", "h134.4" ] ],
+      [ "r5:2", "pico:GP4", "green", [ "h85.2", "v-48", "h105.6" ] ],
+      [ "r7:2", "pico:GP5", "green", [ "h133.2", "v-86.4", "h57.6" ] ],
+      [ "sevseg2:G", "r8:1", "green", [ "v-8.76", "h-48", "v144" ] ],
+      [ "r8:2", "pico:GP6", "green", [ "h171.6", "v-96" ] ]
+    ],
+    "dependencies": {}
+  }

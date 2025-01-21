@@ -1,0 +1,4 @@
+[wokwi]
+version = 1
+firmware = 'build/display_7_segmentos_wokwi.uf2'
+elf = 'build/display_7_segmentos_wokwi.elf'
