@@ -23,7 +23,7 @@ const uint8_t digits [10][7] = {
 
 
 // Função para exibir um dígito no display
-void display_digit(uint8_t digit){// digit == 0
+void display_digit(uint8_t digit){
     for (int i = 0; i < 7; i++)
     {
         gpio_put(segment_pins[i], digits[digit][i]);
