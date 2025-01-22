@@ -42,7 +42,7 @@ pico_set_program_version(cofre_digital "0.1")
 
 # Modify the below lines to enable/disable output over UART/USB
 pico_enable_stdio_uart(cofre_digital 1)
-pico_enable_stdio_usb(cofre_digital 1)
+pico_enable_stdio_usb(cofre_digital 0)
 
 # Add the standard library to the build
 target_link_libraries(cofre_digital
@@ -55,7 +55,8 @@ target_include_directories(cofre_digital PRIVATE
 
 # Add any user requested libraries
 target_link_libraries(cofre_digital 
-        
+        hardware_pwm
+        hardware_clocks
         )
 
 pico_add_extra_outputs(cofre_digital)
