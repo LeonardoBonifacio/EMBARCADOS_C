@@ -45,7 +45,7 @@ int main()
     gpio_init(LED_VERMELHO_PIN);
     gpio_set_dir(LED_VERMELHO_PIN,GPIO_OUT);
 
-    // Inicializa e configura o pino do push button como entrada em pull-dowm
+    // Inicializa e configura o pino do push button como entrada em pull-up
     gpio_init(BUTTON_PIN);
     gpio_set_dir(BUTTON_PIN , GPIO_IN);
     gpio_pull_up(BUTTON_PIN);
