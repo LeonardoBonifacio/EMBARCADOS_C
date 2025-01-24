@@ -2,6 +2,7 @@
 #include "pico/stdlib.h"
 #include "hardware/pio.h"
 #include "hardware/clocks.h"
+#include "pico/bootrom.h"
 
 // Biblioteca gerada pelo arquivo .pio durante compilação.
 #include "ws2818b.pio.h"
@@ -25,21 +26,11 @@ npLED_t leds[LED_COUNT];
 PIO np_pio;
 uint sm;
 
-int index_fora_do_coracao[10] = {0,0,0,0,0,0,0,0,0,0};
-int index_dentro_coracao[6] = {0,0,0,0,0,0};
-int index_cantos[4] = {0,0,0,0};
-int index_restante[5] = {0,0,0,0,0};
-int todos_index[25] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-int colunas_fora_coracao[] = {2,1,3,0,4,0,2,4,1,3} ; //COLUNAS
-int linhas_fora_coracao[] = {0,1,1,2,2,3,3,3,4,4} ; // LINHAS
-int colunas_dentro_coracao[] = {2,1,2,3,1,3};
-int linhas_dentro_coracao[] = {1,2,2,2,3,3};
-int colunas_canto[] = {0,0,4,4};
-int linhas_canto[] = {0,4,0,4};
-int colunas_restante[] = {0,1,3,4,2};
-int linhas_restante[] = {1,0,0,1,4};
-int todas_colunas[] = {0,1,2,3,4,0,1,2,3,4,0,1,2,3,4,0,1,2,3,4,0,1,2,3,4};
-int todas_linhas[] = {0,0,0,0,0,1,1,1,1,1,2,2,2,2,2,3,3,3,3,3,4,4,4,4,4};
+int index_fora_do_coracao[10] = {2,6,8,10,14,15,17,19,21,23};
+int index_dentro_coracao[6] = {7,11,12,13,16,18};
+int index_cantos[4] = {0,4,20,24};
+int index_restante[5] = {1,3,5,9,22};
+
 
 const uint8_t colunas[4] = {19, 18, 17, 16}; // Pinos das colunas
 const uint8_t linhas[4] = {26, 22, 21, 20};  // Pinos das linhas
@@ -51,6 +42,25 @@ const char teclado[4][4] =
   {'7', '8', '9', 'C'},
   {'*', '0', '#', 'D'}
 };
+
+void configurar_teclado_matricial(){
+  // Configuração dos pinos das colunas como saídas digitais
+  for (int i = 0; i < 4; i++)
+  {
+      gpio_init(colunas[i]);
+      gpio_set_dir(colunas[i], GPIO_OUT);
+      gpio_put(colunas[i], 1); // Inicializa todas as colunas como baixo
+  }
+
+  // Configuração dos pinos das linhas como entradas digitais
+  for (int i = 0; i < 4; i++)
+  {
+      gpio_init(linhas[i]);
+      gpio_set_dir(linhas[i], GPIO_IN);
+      gpio_pull_up(linhas[i]); // Habilita pull-up para as linhas
+  }
+
+}
 
 
 // Função para ler o teclado matricial
@@ -154,125 +164,116 @@ void npWrite() {
 }
 
 
-/**
- * Converte as coordenadas (x, y) na matriz 5x5 para o índice da fila linear.
- * 
- * @param x A coluna (0 a 4).
- * @param y A linha (0 a 4).
- * @return O índice correspondente na fila (0 a 24).
- */
-int getIndex(int x, int y) {
-    // Se a linha for par (0, 2, 4), percorremos da esquerda para a direita.
-    // Se a linha for ímpar (1, 3), percorremos da direita para a esquerda.
-    if (y % 2 == 0) {
-        return y * 5 + x; // Linha par (esquerda para direita).
-    } else {
-        return y * 5 + (4 - x); // Linha ímpar (direita para esquerda).
-    }
-}
-
-void desenha_parte_coracao(int indices[], int tamanho, int r, int g, int b) {
+void desenha_parte_do_coracao(int indices[], int tamanho, int r, int g, int b) {
     for (int i = 0; i < tamanho; i++) {
         npSetLED(indices[i], r, g, b);
     }
     npWrite();
 }
 
-void desenha_parte_coracao_pulsante(int indices[], int tamanho, int r, int g, int b, int pulsos, int delay_ms) {
-    for (int p = 0; p < pulsos; p++) {
-        // Aumenta a intensidade (fade in)
-        for (int intensidade = 0; intensidade <= 255; intensidade += 5) {
-            for (int i = 0; i < tamanho; i++) {
-                npSetLED(indices[i], (r * intensidade) / 255, (g * intensidade) / 255, (b * intensidade) / 255);
-            }
-            npWrite();
-            sleep_ms(delay_ms);
-        }
-        // Diminui a intensidade (fade out)
-        for (int intensidade = 255; intensidade >= 0; intensidade -= 5) {
-            for (int i = 0; i < tamanho; i++) {
-                npSetLED(indices[i], (r * intensidade) / 255, (g * intensidade) / 255, (b * intensidade) / 255);
-            }
-            npWrite();
-            sleep_ms(delay_ms);
-        }
-    }
+void preenche_todos_leds(int red, int green, int blue){
+  for (int i = 0; i < 25; i++){
+        npSetLED(i,red,green,blue);
+      }
+      npWrite();
 }
 
-void desenha_coracao_completo(){
-   for (int i = 0; i < 5; i++) {
-      desenha_coracao(index_dentro_coracao, 6, 250, 0, 0);   // Parte interna
-      sleep_ms(300);
-      desenha_coracao(index_fora_do_coracao, 10, 250, 0, 0); // Parte externa
+
+void desenha_coracao_completo(int red_intensidade){
+   for (int i = 0; i < 15; i++) {
+      desenha_parte_do_coracao(index_dentro_coracao, 6, red_intensidade,0,0);   // Parte interna
       sleep_ms(300);
       npClear();
-      desenha_coracao(index_restante,5,250,0,0);
+      desenha_parte_do_coracao(index_fora_do_coracao, 10, red_intensidade,0,0); // Parte externa
+      sleep_ms(300);
+      npClear();
+      desenha_parte_do_coracao(index_restante,5,red_intensidade,0,0);
       sleep_ms(150);
       npClear();
-      desenha_coracao(index_cantos,4,250,0,0);
-      sleep_ms(150);
-      npClear();
-      desenha_coracao(todos_index,25,250,0,0);
+      desenha_parte_do_coracao(index_cantos,4,red_intensidade,0,0);
       sleep_ms(150);
       npClear();
     }
 }
 
-void gerar_index_desenho(){
-   for (int i = 0; i < 25; i++){
-      todos_index[i] = getIndex(todas_colunas[i],todas_linhas[i]);
 
-      if (i < 10){
-      index_fora_do_coracao[i] = getIndex(colunas_fora_coracao[i],linhas_fora_coracao[i]);
-        
-      }
-    
-      if (i < 6) {
-            index_dentro_coracao[i] = getIndex(colunas_dentro_coracao[i], linhas_dentro_coracao[i]);
-      }
-
-      if (i < 4){
-        index_cantos[i] = getIndex(colunas_canto[i],linhas_canto[i]);
-      }
-
-      if (i < 5){
-        index_restante[i] = getIndex(colunas_restante[i],linhas_restante[i]);
-      }   
-  }
-}
 
 
 int main() {
 
   // Inicializa entradas e saídas.
-  stdio_init_all();
-
-  // Configuração dos pinos das colunas como saídas digitais
-  for (int i = 0; i < 4; i++)
-  {
-      gpio_init(colunas[i]);
-      gpio_set_dir(colunas[i], GPIO_OUT);
-      gpio_put(colunas[i], 1); // Inicializa todas as colunas como baixo
-  }
-
-  // Configuração dos pinos das linhas como entradas digitais
-  for (int i = 0; i < 4; i++)
-  {
-      gpio_init(linhas[i]);
-      gpio_set_dir(linhas[i], GPIO_IN);
-      gpio_pull_up(linhas[i]); // Habilita pull-up para as linhas
-  }
-
-
+  // stdio_init_all();
+  configurar_teclado_matricial();
 
   // Inicializa matriz de LEDs NeoPixel.
   npInit(LED_PIN);
   npClear();
-  gerar_index_desenho();
-      
-  // Não faz mais nada. Loop infinito.
+  npWrite();
   while (true) {
-     desenha_coracao_completo();
+    char tecla = leitura_teclado();
+    
+    if (tecla != 'n') // Tecla pressionada
+    {
+        if(tecla == '0'){
+          //("Animação 1")
+          desenha_coracao_completo(255);
+        }
+
+        else if(tecla == '1'){
+          //("Animação 2");
+        }
+
+        else if(tecla == '2'){
+          //("Animação 3");
+        }
+
+        else if(tecla == '3'){
+          //("Animação 4");
+        }
+        
+        else if(tecla == '4'){
+          //("Animação 5");
+        }
+
+        else if(tecla == 'A'){
+          // Todos os leds desligados
+          npClear();
+          npWrite();
+        }
+
+        else if(tecla == 'B'){
+          //("Todos os leds ligados na cor Azul com 100%%");
+          npClear();
+          npWrite();
+          preenche_todos_leds(0,0,255);
+          
+        }
+
+        else if(tecla == 'C'){
+          //("Todos os leds ligados na cor Vermelha com 80%%");
+          npClear();
+          npWrite();
+          preenche_todos_leds(204,0,0);
+        }
+
+        else if(tecla == 'D'){
+          //("Todos os leds ligados na cor verde com 50%%");
+          npClear();
+          npWrite();
+          preenche_todos_leds(0,127,0);
+        }
+
+        else if(tecla == '#'){
+          //("Todos os leds ligados na cor branca com 20%%");
+          npClear();
+          npWrite();
+          preenche_todos_leds(51,51,51);
+        }
+        else if(tecla == '*'){
+          // Habilita modo de gravação
+          reset_usb_boot(0,0); //habilita o modo de gravação do microcontrolador
+        }
+    }
+    sleep_ms(100); // Intervalo de tempo menor para uma leitura mais rápida
   }
 }
-  
