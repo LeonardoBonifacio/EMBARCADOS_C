@@ -182,16 +182,16 @@ void preenche_todos_leds(int red, int green, int blue){
 void desenha_coracao_completo(int red_intensidade){
    for (int i = 0; i < 15; i++) {
       desenha_parte_do_coracao(index_dentro_coracao, 6, red_intensidade,0,0);   // Parte interna
-      sleep_ms(300);
+      sleep_ms(200);
       npClear();
       desenha_parte_do_coracao(index_fora_do_coracao, 10, red_intensidade,0,0); // Parte externa
-      sleep_ms(300);
+      sleep_ms(200);
       npClear();
       desenha_parte_do_coracao(index_restante,5,red_intensidade,0,0);
-      sleep_ms(150);
+      sleep_ms(200);
       npClear();
       desenha_parte_do_coracao(index_cantos,4,red_intensidade,0,0);
-      sleep_ms(150);
+      sleep_ms(200);
       npClear();
     }
 }
