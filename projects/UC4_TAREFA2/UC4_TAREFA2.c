@@ -99,6 +99,8 @@ void menu(){
     printf("\n");
     sleep_ms(200);// debouncing
 }
+
+
 int main()
 {
     // Inicializa a UART (Serial)
@@ -121,6 +123,8 @@ int main()
     gpio_init(BUZZER_PIN_B);
     gpio_set_dir(BUZZER_PIN_A, GPIO_OUT);
     gpio_set_dir(BUZZER_PIN_B, GPIO_OUT);
+
+    
     // Inicializar o PWM no pino do buzzer
     pwm_init_buzzer(BUZZER_PIN_A,BUZZER_FREQUENCY_A);
     pwm_init_buzzer(BUZZER_PIN_B,BUZZER_FREQUENCY_B);

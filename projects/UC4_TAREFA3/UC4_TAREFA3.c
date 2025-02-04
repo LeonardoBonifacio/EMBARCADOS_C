@@ -76,7 +76,7 @@ char leitura_teclado()
 
     for (int coluna = 0; coluna < 4; coluna++)
     {
-        // Ativa a coluna atual (coloca o pino da coluna como 1)
+        // Ativa a coluna atual (coloca o pino da coluna como 0)
         gpio_put(colunas[coluna], 0);
 
         for (int linha = 0; linha < 4; linha++)

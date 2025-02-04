@@ -6,7 +6,7 @@
 
 
 // Biblioteca gerada pelo arquivo .pio durante compilação.
-#include "ws2818b.pio.h"
+#include "ws2812.pio.h"
 
 // Definição do número de LEDs e pinos.
 #define LED_COUNT 25
@@ -15,23 +15,8 @@
 #define BUTTON_B 6
 #define BUTTON_JOYSTICK 22 
 #define LED_RED 13
-#define LED_GREEN 11
-#define LED_BLUE 12
 #define DEBOUNCE_DELAY_MS 500  // Tempo de debounce em milissegundos 
 
-
-// Arrays com index das posições relativas a cada led rgb presente na matriz de leds 
-// Partindo do zero(no canto inferior direito) ate 24 (no canto superior esquerdo)
-int index_posicoes_zero[]   = {1,2,3,4,5,8,11,14,15,18,21,22,23,24};       // Tamanho == 14
-int index_posicoes_um[]     = {2,7,12,14,16,17,22};                        // Tamanho == 7
-int index_posicoes_dois[]   = {1,2,3,4,5,11,12,13,14,18,21,22,23,24};      // Tamanho == 14
-int index_posicoes_tres[]   = {1,2,3,4,8,11,12,13,14,18,21,22,23,24};      // Tamanho == 14
-int index_posicoes_quatro[] = {1,8,11,12,13,14,15,18,21,24} ;              // Tamanho == 10
-int index_posicoes_cinco[]  = {1,2,3,4,8,11,12,13,14,15,21,22,23,24};      // Tamanho == 14
-int index_posicoes_seis[]   = {1,2,3,4,5,8,11,12,13,14,15,21,22,23,24};    // Tamanho == 15
-int index_posicoes_sete[]   = {1,8,11,14,15,18,21,22,23,24};               // Tamanho == 10
-int index_posicoes_oito[]   = {1,2,3,4,5,8,11,12,13,14,15,18,21,22,23,24}; // Tamanho == 16
-int index_posicoes_nove[]   = {1,8,11,12,13,14,15,18,21,22,23,24};         // Tamanho == 12
 
 // Váriaveis volatile para indicar ao compilador que elas serão alteradas por eventos externos
 
@@ -47,71 +32,133 @@ volatile uint32_t ultimo_tempo_button_a = 0;  // Para armazenar o tempo da últi
 volatile uint32_t ultimo_tempo_button_b = 0;  // Para armazenar o tempo da última interrupção acionada pelo bottão B
 
 
-// Definição de pixel GRB
-struct pixel_t {
-  uint8_t G, R, B; // Três valores de 8-bits compõem um pixel.
+
+
+
+// Buffer para armazenar quais LEDs estão ligados matriz 5x5 formando numero 0
+bool numero_0[LED_COUNT] = {
+    0, 1, 1, 1, 1, 
+    1, 0, 0, 1, 0, 
+    0, 1, 0, 0, 1, 
+    1, 0, 0, 1, 0, 
+    0, 1, 1, 1, 1
 };
-typedef struct pixel_t pixel_t;
-typedef pixel_t npLED_t; // Mudança de nome de "struct pixel_t" para "npLED_t" por clareza.
-
-// Declaração do buffer de pixels que formam a matriz.
-npLED_t leds[LED_COUNT];
-
-// Variáveis para uso da máquina PIO.
-PIO np_pio;
-uint sm;
 
 
+// Buffer para armazenar quais LEDs estão ligados matriz 5x5 formando numero 1
+bool numero_1[LED_COUNT] = {
+    0, 0, 1, 0, 0, 
+    0, 0, 1, 0, 0, 
+    0, 0, 1, 0, 1, 
+    0, 1, 1, 0, 0, 
+    0, 0, 1, 0, 0
+};
 
-// Inicializa a máquina PIO para controle da matriz de LEDs.
-void npInit(uint pin) {
+// Buffer para armazenar quais LEDs estão ligados matriz 5x5 formando numero 2
+bool numero_2[LED_COUNT] = {
+    0, 1, 1, 1, 1, 
+    1, 0, 0, 0, 0, 
+    0, 1, 1, 1, 1, 
+    0, 0, 0, 1, 0, 
+    0, 1, 1, 1, 1
+};
 
-  // Cria programa PIO.
-  uint offset = pio_add_program(pio0, &ws2818b_program);
-  np_pio = pio0;
+// Buffer para armazenar quais LEDs estão ligados matriz 5x5 formando numero 3
+bool numero_3[LED_COUNT] = {
+    0, 1, 1, 1, 1, 
+    0, 0, 0, 1, 0, 
+    0, 1, 1, 1, 1, 
+    0, 0, 0, 1, 0, 
+    0, 1, 1, 1, 1
+};
 
-  // Toma posse de uma máquina PIO.
-  sm = pio_claim_unused_sm(np_pio, false);
-  if (sm < 0) {
-    np_pio = pio1;
-    sm = pio_claim_unused_sm(np_pio, true); // Se nenhuma máquina estiver livre, panic!
-  }
 
-  // Inicia programa na máquina PIO obtida.
-  ws2818b_program_init(np_pio, sm, offset, pin, 800000.f);
+// Buffer para armazenar quais LEDs estão ligados matriz 5x5 formando numero 4
+bool numero_4[LED_COUNT] = {
+    0, 1, 0, 0, 0, 
+    0, 0, 0, 1, 0, 
+    0, 1, 1, 1, 1, 
+    1, 0, 0, 1, 0, 
+    0, 1, 0, 0, 1
+};
 
-  // Limpa buffer de pixels.
-  for (uint i = 0; i < LED_COUNT; ++i) {
-    leds[i].R = 0;
-    leds[i].G = 0;
-    leds[i].B = 0;
-  }
+
+// Buffer para armazenar quais LEDs estão ligados matriz 5x5 formando numero 5
+bool numero_5[LED_COUNT] = {
+    0, 1, 1, 1, 1, 
+    0, 0, 0, 1, 0, 
+    0, 1, 1, 1, 1, 
+    1, 0, 0, 0, 0, 
+    0, 1, 1, 1, 1
+};
+
+
+// Buffer para armazenar quais LEDs estão ligados matriz 5x5 formando numero 6
+bool numero_6[LED_COUNT] = {
+    0, 1, 1, 1, 1, 
+    1, 0, 0, 1, 0, 
+    0, 1, 1, 1, 1, 
+    1, 0, 0, 0, 0, 
+    0, 1, 1, 1, 1
+};
+
+// Buffer para armazenar quais LEDs estão ligados matriz 5x5 formando numero 7
+bool numero_7[LED_COUNT] = {
+    0, 1, 0, 0, 0, 
+    0, 0, 0, 1, 0, 
+    0, 1, 0, 0, 1, 
+    1, 0, 0, 1, 0, 
+    0, 1, 1, 1, 1
+};
+
+// Buffer para armazenar quais LEDs estão ligados matriz 5x5 formando numero 8
+bool numero_8[LED_COUNT] = {
+    0, 1, 1, 1, 1, 
+    1, 0, 0, 1, 0, 
+    0, 1, 1, 1, 1, 
+    1, 0, 0, 1, 0, 
+    0, 1, 1, 1, 1
+};
+
+// Buffer para armazenar quais LEDs estão ligados matriz 5x5 formando numero 9
+bool numero_9[LED_COUNT] = {
+    0, 1, 0, 0, 0, 
+    0, 0, 0, 1, 0, 
+    0, 1, 1, 1, 1, 
+    1, 0, 0, 1, 0, 
+    0, 1, 1, 1, 1
+};
+
+
+
+static inline void put_pixel(uint32_t pixel_grb)
+{
+    pio_sm_put_blocking(pio0, 0, pixel_grb << 8u);
+}
+
+static inline uint32_t urgb_u32(uint8_t r, uint8_t g, uint8_t b)
+{
+    return ((uint32_t)(r) << 8) | ((uint32_t)(g) << 16) | (uint32_t)(b);
 }
 
 
-// Atribui uma cor RGB a um LED.
-void npSetLED(const uint index, const uint8_t r, const uint8_t g, const uint8_t b) {
-  leds[index].R = r;
-  leds[index].G = g;
-  leds[index].B = b;
-}
+void set_one_led(uint8_t r, uint8_t g, uint8_t b, bool numero_a_ser_desenhado[])
+{
+    // Define a cor com base nos parâmetros fornecidos
+    uint32_t color = urgb_u32(r, g, b);
 
-// Limpa o buffer de pixels.
-void npClear() {
-  for (uint i = 0; i < LED_COUNT; ++i)
-    npSetLED(i, 0, 0, 0);
-}
-
-
-// Escreve os dados do buffer nos LEDs.
-void npWrite() {
-  // Escreve cada dado de 8-bits dos pixels em sequência no buffer da máquina PIO.
-  for (uint i = 0; i < LED_COUNT; ++i) {
-    pio_sm_put_blocking(np_pio, sm, leds[i].G);
-    pio_sm_put_blocking(np_pio, sm, leds[i].R);
-    pio_sm_put_blocking(np_pio, sm, leds[i].B);
-  }
-  sleep_us(100); // Espera 100us, sinal de RESET do datasheet.
+    // Define todos os LEDs com a cor especificada
+    for (int i = 0; i < LED_COUNT; i++)
+    {
+        if (numero_a_ser_desenhado[i])
+        {
+            put_pixel(color); // Liga o LED com um no buffer
+        }
+        else
+        {
+            put_pixel(0);  // Desliga os LEDs com zero no buffer
+        }
+    }
 }
 
 // Inicializa as gpio referentes aos botões e leds, alem de colocar os 3 botões em pull_up 
@@ -131,60 +178,43 @@ void inicializar_leds_e_botoes(){
     gpio_init(LED_RED);
     gpio_set_dir(LED_RED,GPIO_OUT);
     gpio_put(LED_RED,false);
-
-    gpio_init(LED_GREEN);
-    gpio_set_dir(LED_GREEN,GPIO_OUT);
-    gpio_put(LED_GREEN,false);
-
-    gpio_init(LED_BLUE);
-    gpio_set_dir(LED_BLUE,GPIO_OUT);
-    gpio_put(LED_BLUE,false);
 }
 
 
-// Desenha na matriz de leds nas posicoes solicitadas
-void desenhar_na_matriz(int posicoes[], int tamanho_posicoes, int red, int green, int blue){
-    for (int i = 0; i < tamanho_posicoes; i++)
-    {
-        npSetLED(posicoes[i],red,green,blue);
-    }
-    npWrite();
-    
-}
 
 // Desenha baseado em que número o contador está
 void mostra_numero_baseado_no_contador(){
     switch (incrementa_ou_decrementa_led) 
     {
     case 0:
-        desenhar_na_matriz(index_posicoes_zero,14,255,255,255);// Branco
+        set_one_led(255,255,255,numero_0);// Branco
         break;
     case 1:
-        desenhar_na_matriz(index_posicoes_um,7,255,0,0); // Vermelho
+        set_one_led(255,0,0,numero_1); // Vermelho
         break;
     case 2:
-        desenhar_na_matriz(index_posicoes_dois,14,255,127,0); // Amarelo
+        set_one_led(255,127,0,numero_2); // Amarelo
         break;
     case 3:
-        desenhar_na_matriz(index_posicoes_tres,14,169,169,169); // Cinza
+        set_one_led(169,169,169,numero_3); // Cinza
         break;
     case 4:
-        desenhar_na_matriz(index_posicoes_quatro,10,0,255,0); // Verde
+        set_one_led(0,255,0,numero_4); // Verde
         break;
     case 5:
-        desenhar_na_matriz(index_posicoes_cinco,14,0,0,255); // Azul
+        set_one_led(0,0,255,numero_5); // Azul
         break;
     case 6:
-        desenhar_na_matriz(index_posicoes_seis,15,255,140,0); // Laranja
+        set_one_led(255,140,0,numero_6); // Laranja
         break;
     case 7:
-        desenhar_na_matriz(index_posicoes_sete,10,139,0,255); // Roxo
+        set_one_led(139,0,255,numero_7); // Roxo
         break;
     case 8:
-        desenhar_na_matriz(index_posicoes_oito,16,139,69,19); // Branco
+        set_one_led(139,69,19,numero_8); // Branco
         break;
     case 9:
-        desenhar_na_matriz(index_posicoes_nove,12,255,20,147); // Rosa
+        set_one_led(255,20,147,numero_9); // Rosa
         break;
     }
 }
@@ -233,8 +263,11 @@ static void gpio_irq_handler(uint gpio, uint32_t events) {
 
 int main() {
     inicializar_leds_e_botoes();
-    npInit(MATRIZ_LED_PIN);
-    npWrite();
+    PIO pio = pio0;
+    int sm = 0;
+    uint offset = pio_add_program(pio, &ws2812_program);
+
+    ws2812_program_init(pio, sm, offset, MATRIZ_LED_PIN, 800000, false);
 
     // Registra interrupções para todos os botões
     gpio_set_irq_enabled_with_callback(BUTTON_A, GPIO_IRQ_EDGE_FALL, true, &gpio_irq_handler);
@@ -246,7 +279,6 @@ int main() {
 
         // Atualiza matriz de LEDs se necessário
         if (atualiza_leds) {
-            npClear();// Limpa a matriz de Leds
             mostra_numero_baseado_no_contador();
             atualiza_leds = false;  // Reseta flag
         }

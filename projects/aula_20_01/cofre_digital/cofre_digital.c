@@ -287,6 +287,7 @@ int main()
     setup_leds();
     setup_buzzer();
     // TO DO Adicionar um lcd para emitir mensagem de configuração de senha e fazer uma configuração de senha manual
+    // Melhorar a logica da multiplexação dos displays e implementar interrupções com temporizadores
     while (true) {
         char tecla = leitura_teclado(); 
         if (tecla >= '0' && tecla <= '9')

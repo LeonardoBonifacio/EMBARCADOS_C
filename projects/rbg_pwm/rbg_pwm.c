@@ -6,12 +6,13 @@
 #define LEDG 11
 #define LEDB 12
 
-#define PWM_STEP (1 << 8) // 256
+#define PWM_STEP (1 << 8) // 256  00000001 -> 10000000
 
 int main() {
     stdio_init_all();
 
     uint slice_r, slice_g, slice_b;
+    
                    //65280
     uint16_t pwm_r = 0xFF00, pwm_g = 0, pwm_b = 0;
     uint8_t state = 0;

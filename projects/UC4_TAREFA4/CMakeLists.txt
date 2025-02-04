@@ -42,7 +42,7 @@ pico_set_program_version(UC4_TAREFA4 "0.1")
 
 
 # Generate PIO header
-pico_generate_pio_header(UC4_TAREFA4 ${CMAKE_CURRENT_LIST_DIR}/ws2818b.pio)
+pico_generate_pio_header(UC4_TAREFA4 ${CMAKE_CURRENT_LIST_DIR}/ws2812.pio)
 
 target_sources(UC4_TAREFA4 PRIVATE UC4_TAREFA4.c)
 
