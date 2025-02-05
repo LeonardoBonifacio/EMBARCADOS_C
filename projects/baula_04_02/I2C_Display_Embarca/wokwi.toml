@@ -1,0 +1,4 @@
+[wokwi]
+version = 1
+firmware = 'build/I2C_Disp_Embarca.uf2'
+elf = 'build/I2C_Disp_Embarca.elf'

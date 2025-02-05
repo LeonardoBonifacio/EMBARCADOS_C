@@ -1,0 +1,90 @@
+{
+    "version": 1,
+    "author": "Prof. Tiago Façanha",
+    "editor": "wokwi",
+    "parts": [
+      {
+        "type": "board-pi-pico-w",
+        "id": "pico",
+        "top": 6.35,
+        "left": 262.75,
+        "attrs": { "builder": "pico-sdk" }
+      },
+      {
+        "type": "wokwi-7segment",
+        "id": "sevseg1",
+        "top": 52.98,
+        "left": 5.08,
+        "attrs": { "common": "cathode", "color": "#d040d0" }
+      },
+      {
+        "type": "wokwi-resistor",
+        "id": "r1",
+        "top": 13.55,
+        "left": 144,
+        "attrs": { "value": "330" }
+      },
+      {
+        "type": "wokwi-resistor",
+        "id": "r2",
+        "top": 23.15,
+        "left": 144,
+        "attrs": { "value": "330" }
+      },
+      {
+        "type": "wokwi-resistor",
+        "id": "r3",
+        "top": 90.35,
+        "left": 144,
+        "attrs": { "value": "330" }
+      },
+      {
+        "type": "wokwi-resistor",
+        "id": "r4",
+        "top": 71.15,
+        "left": 144,
+        "attrs": { "value": "330" }
+      },
+      {
+        "type": "wokwi-resistor",
+        "id": "r5",
+        "top": 42.35,
+        "left": 144,
+        "attrs": { "value": "330" }
+      },
+      {
+        "type": "wokwi-resistor",
+        "id": "r6",
+        "top": 51.95,
+        "left": 144,
+        "attrs": { "value": "330" }
+      },
+      {
+        "type": "wokwi-resistor",
+        "id": "r7",
+        "top": 61.55,
+        "left": 144,
+        "attrs": { "value": "330" }
+      }
+    ],
+    "connections": [
+      [ "pico:GP0", "$serialMonitor:RX", "", [] ],
+      [ "pico:GP1", "$serialMonitor:TX", "", [] ],
+      [ "r1:2", "pico:GP0", "green", [ "h37.2", "v19.2" ] ],
+      [ "sevseg1:A", "r1:1", "green", [ "v-37.56", "h105.6" ] ],
+      [ "pico:GP1", "r2:2", "green", [ "h0" ] ],
+      [ "sevseg1:B", "r2:1", "green", [ "v0" ] ],
+      [ "pico:GP6", "r3:2", "green", [ "h0" ] ],
+      [ "r3:1", "sevseg1:G", "green", [ "h-48", "v57.6", "h-105.6", "v-96.84" ] ],
+      [ "pico:GP5", "r4:2", "blue", [ "h0" ] ],
+      [ "r4:1", "sevseg1:F", "blue", [ "h-57.6", "v86.4", "h-105.6", "v-115.2", "h38.4" ] ],
+      [ "pico:GP2", "r5:2", "green", [ "h0" ] ],
+      [ "r5:1", "sevseg1:C", "green", [ "v0", "h-86.4", "v76.8" ] ],
+      [ "pico:GP3", "r6:2", "green", [ "h0" ] ],
+      [ "r6:1", "sevseg1:D", "green", [ "v0", "h-76.8", "v76.8", "h-48" ] ],
+      [ "pico:GP4", "r7:2", "green", [ "h0" ] ],
+      [ "r7:1", "sevseg1:E", "green", [ "v0", "h-67.2", "v76.8", "h-67.2" ] ],
+      [ "pico:GND.3", "sevseg1:COM.1", "yellow", [ "h-153.6", "v38.4", "h-86.4" ] ]
+    ],
+    "dependencies": {}
+  }

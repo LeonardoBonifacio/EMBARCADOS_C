@@ -1,0 +1,1 @@
+A função set_sys_clock_khz é usada para configurar a frequência do clock do sistema (clk_sys) em kHz. No entanto, é importante citar que nem todas as frequências de clock são possíveis. Caso a referida rotina não consiga produzir este valor, o seu retorno será o booleano Falso.

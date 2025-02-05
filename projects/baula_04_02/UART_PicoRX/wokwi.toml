@@ -1,0 +1,4 @@
+[wokwi]
+version = 1
+firmware = 'build/uart_RX.uf2'
+elf = 'build/uart_RX.elf'

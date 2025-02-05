@@ -1,0 +1,1 @@
+Calcula o próximo tempo absoluto em que a ação deve ocorrer. A função get_absolute_time() retorna o tempo atual do sistema. A função delayed_by_us() calcula um tempo futuro adicionando o intervalo em microsegundos ao tempo atual. Ao final, Calcula o próximo tempo de despertar, adicionando o intervalo de 1 segundo ao tempo atual.
