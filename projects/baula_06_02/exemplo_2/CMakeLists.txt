@@ -28,36 +28,35 @@ set(PICO_BOARD pico_w CACHE STRING "Board type")
 # Pull in Raspberry Pi Pico SDK (must be before project)
 include(pico_sdk_import.cmake)
 
-project(buzzer_star_wars C CXX ASM)
+project(exemplo_2 C CXX ASM)
 
 # Initialise the Raspberry Pi Pico SDK
 pico_sdk_init()
 
 # Add executable. Default name is the project name, version 0.1
 
-add_executable(buzzer_star_wars buzzer_star_wars.c )
+add_executable(exemplo_2 exemplo_2.c )
 
-pico_set_program_name(buzzer_star_wars "buzzer_star_wars")
-pico_set_program_version(buzzer_star_wars "0.1")
+pico_set_program_name(exemplo_2 "exemplo_2")
+pico_set_program_version(exemplo_2 "0.1")
 
 # Modify the below lines to enable/disable output over UART/USB
-pico_enable_stdio_uart(buzzer_star_wars 0)
-pico_enable_stdio_usb(buzzer_star_wars 0)
+pico_enable_stdio_uart(exemplo_2 0)
+pico_enable_stdio_usb(exemplo_2 1)
 
 # Add the standard library to the build
-target_link_libraries(buzzer_star_wars
+target_link_libraries(exemplo_2
         pico_stdlib)
 
 # Add the standard include files to the build
-target_include_directories(buzzer_star_wars PRIVATE
-  ${CMAKE_CURRENT_LIST_DIR}
+target_include_directories(exemplo_2 PRIVATE
+        ${CMAKE_CURRENT_LIST_DIR}
 )
 
 # Add any user requested libraries
-target_link_libraries(buzzer_star_wars 
+target_link_libraries(exemplo_2 
         hardware_pwm
-        hardware_clocks
         )
 
-pico_add_extra_outputs(buzzer_star_wars)
+pico_add_extra_outputs(exemplo_2)
 
